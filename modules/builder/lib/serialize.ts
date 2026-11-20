@@ -74,7 +74,7 @@ export function canvasToDefinition(nodes: Node[], edges: Edge[]): AgentDefinitio
     schemaVersion: 1,
     instructions: (agentNode?.data.instructions as string) ?? base.instructions,
     model: {
-      provider: "openai",
+      provider: "groq",
       modelId: (modelNode?.data.modelId as string) ?? base.model.modelId,
     },
     tools,
