@@ -37,6 +37,7 @@ export function AgentBuilder({ agent }: AgentBuilderProps) {
   const init = useCanvasStore((s) => s.init);
   const isDirty = useCanvasStore((s) => s.isDirty);
   const getDefinition = useCanvasStore((s) => s.getDefinition);
+  const getAgentDefinition = useCanvasStore((s) => s.getAgentDefinition);
   const getCanvas = useCanvasStore((s) => s.getCanvas);
   const markClean = useCanvasStore((s) => s.markClean);
 
@@ -69,7 +70,7 @@ export function AgentBuilder({ agent }: AgentBuilderProps) {
   }
 
   return (
-    <div className="flex h-full min-h-[calc(100vh-0px)] flex-col">
+    <div className="flex h-dvh min-h-0 min-w-0 flex-col">
     <header className="flex items-center justify-between gap-4 border-b border-border px-4 py-3">
       <div className="flex min-w-0 items-center gap-3">
         <AppIcon name={agent.icon} badge className="size-11" />
@@ -100,7 +101,7 @@ export function AgentBuilder({ agent }: AgentBuilderProps) {
       </div>
     </header>
 
-    <main className="relative min-h-0 flex-1 bg-muted/20">
+    <main className="relative min-h-0 min-w-0 flex-1 bg-muted/20">
       <AgentCanvas />
     </main>
 
@@ -111,7 +112,13 @@ export function AgentBuilder({ agent }: AgentBuilderProps) {
           <DrawerDescription>Pick tools and memory for this agent.</DrawerDescription>
         </DrawerHeader>
         <div className="overflow-y-auto px-4 pb-6">
-          <ToolPicker />
+          <ToolPicker
+            onToolAdded={() => setToolsOpen(false)}
+            onCustomToolAdded={() => {
+              setToolsOpen(false);
+              setSettingsOpen(true);
+            }}
+          />
         </div>
       </DrawerContent>
     </Drawer>
@@ -127,7 +134,7 @@ export function AgentBuilder({ agent }: AgentBuilderProps) {
           <div className="min-h-0 flex-1 overflow-hidden">
             <ChatPanel
               agentId={agent.id}
-              definition={getDefinition()}
+              definition={getAgentDefinition()}
               welcomeMessage={agent.welcomeMessage}
               starterPrompts={(agent.starterPrompts as string[]) ?? []}
             />
