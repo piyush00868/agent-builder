@@ -8,7 +8,7 @@ export async function signIn() {
   const result = await auth.api.signInSocial({
     body: {
       provider: "github",
-      callbackURL: "/",
+      callbackURL: "/agents",
     },
     headers: await headers(),
   });
@@ -39,6 +39,6 @@ export async function requireUnauth() {
   const session = await auth.api.getSession({ headers: await headers() });
 
   if (session) {
-    redirect("/");
+    redirect("/agents");
   }
 }
