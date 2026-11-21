@@ -25,7 +25,8 @@ const githubToolIds = [
 
 export async function getToolsForAgent(definition: AgentDefinition, userId: string) {
   const tools: StructuredTool[] = [];
-  const needsGithub = definition.tools.some((t) => githubToolIds.includes(t.toolId));
+  const configuredTools = Array.isArray(definition.tools) ? definition.tools : [];
+  const needsGithub = configuredTools.some((t) => githubToolIds.includes(t.toolId));
 
   let githubTools: Record<string, StructuredTool> = {};
   if (needsGithub) {
@@ -37,7 +38,7 @@ export async function getToolsForAgent(definition: AgentDefinition, userId: stri
     });
   }
 
-  for (const t of definition.tools) {
+  for (const t of configuredTools) {
     if (isCustomToolConfig(t.config)) {
       tools.push(buildCustomTool(t.config));
       continue;
