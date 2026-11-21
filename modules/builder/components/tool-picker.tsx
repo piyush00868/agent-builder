@@ -5,7 +5,13 @@ import { toolsCatalog } from "@/modules/builder/lib/tools-catalog";
 import { useCanvasStore } from "@/modules/builder/store/canvas-store";
 import { Button } from "@/components/ui/button";
 
-export function ToolPicker() {
+export function ToolPicker({
+  onToolAdded,
+  onCustomToolAdded,
+}: {
+  onToolAdded?: () => void;
+  onCustomToolAdded?: () => void;
+}) {
   const addTool = useCanvasStore((s) => s.addTool);
   const addCustomTool = useCanvasStore((s) => s.addCustomTool);
   const toggleMemory = useCanvasStore((s) => s.toggleMemory);
@@ -34,7 +40,10 @@ export function ToolPicker() {
             size="sm"
             className="w-full justify-start"
             disabled={addedToolIds.includes(tool.id)}
-            onClick={() => addTool(tool.id)}
+            onClick={() => {
+              addTool(tool.id);
+              onToolAdded?.();
+            }}
           >
             <AppIcon name={tool.icon} className="mr-2 size-4" />
             {tool.label}
@@ -54,7 +63,10 @@ export function ToolPicker() {
             size="sm"
             className="w-full justify-start"
             disabled={addedToolIds.includes(tool.id)}
-            onClick={() => addTool(tool.id)}
+            onClick={() => {
+              addTool(tool.id);
+              onToolAdded?.();
+            }}
           >
             <AppIcon name={tool.icon} className="mr-2 size-4" />
             {tool.label}
@@ -69,7 +81,10 @@ export function ToolPicker() {
         variant="default"
         size="sm"
         className="w-full justify-start"
-        onClick={addCustomTool}
+        onClick={() => {
+          addCustomTool();
+          onCustomToolAdded?.();
+        }}
       >
         <AppIcon name="custom" className="mr-2 size-4" />
         Create custom tool
