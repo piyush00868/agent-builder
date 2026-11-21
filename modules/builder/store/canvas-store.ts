@@ -2,13 +2,11 @@
 
 import {
   addEdge,
-  applyEdgeChanges,
-  applyNodeChanges,
+  NodeChangeset,
   type Connection,
   type Edge,
-  type EdgeChange,
+  type EdgeChangeset,
   type Node,
-  type NodeChange,
 } from "@xyflow/react";
 import { create } from "zustand";
 import type { AgentDefinition } from "@/modules/agents/lib/definition";
@@ -32,8 +30,8 @@ type CanvasStore = {
   limits: BuilderDefinition["limits"];
   isDirty: boolean;
   init: (draftDefinition: unknown, canvas: any) => void;
-  onNodesChange: (changes: NodeChange[]) => void;
-  onEdgesChange: (changes: EdgeChange[]) => void;
+  onNodesChange: (changes: NodeChangeset) => void;
+  onEdgesChange: (changes: EdgeChangeset) => void;
   onConnect: (connection: Connection) => void;
   selectNode: (nodeId: string | null) => void;
   selectTool: (index: number | null) => void;
@@ -101,21 +99,21 @@ export const useCanvasStore = create<CanvasStore>((set, get) => ({
   },
 
   onNodesChange(changes) {
-    const filtered = changes.filter((change) => {
+    const filtered = changes.toArray().filter((change) => {
       if (change.type !== "remove") return true;
       const node = get().nodes.find((n) => n.id === change.id);
       return node?.type !== "start" && node?.type !== "agent" && node?.type !== "end";
     });
 
     set({
-      nodes: applyNodeChanges(filtered, get().nodes),
+      nodes: new NodeChangeset(filtered).applyTo(get().nodes),
       isDirty: true,
     });
   },
 
   onEdgesChange(changes) {
     set({
-      edges: applyEdgeChanges(changes, get().edges),
+      edges: changes.applyTo(get().edges),
       isDirty: true,
     });
   },
