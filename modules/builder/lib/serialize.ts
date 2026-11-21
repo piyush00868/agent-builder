@@ -99,7 +99,14 @@ export function definitionToCanvas(
       return n;
     });
 
-    return { nodes, edges: savedCanvas!.edges ?? [] };
+    return {
+      nodes,
+      edges: (savedCanvas!.edges ?? []).map((edge) => ({
+        ...edge,
+        sourceHandle: edge.sourceHandle ?? "bottom",
+        targetHandle: edge.targetHandle ?? "top",
+      })),
+    };
   }
 
   const nodes: Node[] = [];
@@ -112,6 +119,8 @@ export function definitionToCanvas(
     id: e.id,
     source: e.source,
     target: e.target,
+    sourceHandle: "bottom",
+    targetHandle: "top",
     animated: true,
   }));
 
